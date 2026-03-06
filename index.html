@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Status Myanmar</title>
+    <style>
+        body { font-family: sans-serif; background: #eceff1; margin: 0; padding: 15px; }
+        .container { max-width: 600px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #eee; padding: 12px 8px; text-align: left; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8em; color: white; display: inline-block; }
+        .bg-green { background: #28a745; }
+        .bg-red { background: #dc3545; }
+        .bg-orange { background: #ffc107; color: #000; }
+
+        /* Action Buttons */
+        .btn-edit { color: #007bff; cursor: pointer; margin-right: 10px; font-size: 18px; border: none; background: none; }
+        .btn-delete { color: #dc3545; cursor: pointer; font-size: 18px; border: none; background: none; }
+
+        /* Floating Button */
+        .fab {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px; background: #007bff;
+            border-radius: 50%; color: white; border: none;
+            font-size: 30px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Popup Form */
+        .modal {
+            display: none; position: fixed; z-index: 100;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+        }
+        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; position: relative; }
+        input, select, .submit-btn { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .submit-btn { background: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
+    </style> 
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>တောင်ကြီး ဆီဆိုင်သတင်းများ</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ဆိုင်အမည်</th>
+                    <th>အခြေအနေ</th>
+                    <th>ပြင်/ဖျက်</th>
+                </tr>
+            </thead>
+            <tbody id="dataTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div id="inputModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">သတင်းအသစ်တင်ရန်</h3>
+        <input type="text" id="shopName" placeholder="ဆိုင်အမည်">
+        <select id="status">
+            <option value="ရရှိနိုင်သည်">✅ ဆီရှိသည်</option>
+            <option value="ပြတ်နေသည်">❌ ဆီပြတ်နေသည်</option>
+            <option value="တန်းစီနေရဆဲ">⏳ တန်းစီနေရဆဲ</option>
+        </select>
+        <button class="submit-btn" onclick="saveData()">သိမ်းဆည်းမည်</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; cursor:pointer;">မလုပ်တော့ပါ</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    // Firebase Config (သင့် Key များ ထည့်ပါ)
+    const firebaseConfig = {
+    apiKey: "AIzaSyCmsK55PSk5rYMIqvj8Xkadf1tFhkhsKxc",
+    authDomain: "taunggyigasstation.firebaseapp.com",
+    databaseURL: "https://taunggyigasstation-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "taunggyigasstation",
+    storageBucket: "taunggyigasstation.firebasestorage.app",
+    messagingSenderId: "206030659711",
+    appId: "1:206030659711:web:6c320045e1db2c899a5f4a"
+  };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function openModal() {
+        document.getElementById('modalTitle').innerText = "သတင်းအသစ်တင်ရန်";
+        document.getElementById('shopName').disabled = false;
+        document.getElementById('inputModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('inputModal').style.display = 'none';
+        document.getElementById('shopName').value = "";
+    }
+
+    // Data သိမ်းခြင်း (Update/Create)
+    function saveData() {
+        const name = document.getElementById('shopName').value;
+        const status = document.getElementById('status').value;
+        const dateNow = new Date().toLocaleDateString();
+        const timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        if(!name) return alert("အမည်ထည့်ပါ");
+
+        db.ref('fuel_status/' + name).set({
+            status: status,
+            date: dateNow,
+            time: timeNow
+        }).then(() => closeModal());
+    }
+
+    // Edit Function
+    function editData(name, status) {
+        document.getElementById('modalTitle').innerText = "သတင်းပြင်ရန်";
+        document.getElementById('shopName').value = name;
+        document.getElementById('shopName').disabled = true; // အမည်ကို ပြင်လို့မရအောင် ပိတ်ထားခြင်း
+        document.getElementById('status').value = status;
+        document.getElementById('inputModal').style.display = 'flex';
+    }
+
+    // Delete Function
+    function deleteData(name) {
+        if(confirm(name + " သတင်းကို ဖျက်မှာ သေချာပါသလား?")) {
+            db.ref('fuel_status/' + name).remove();
+        }
+    }
+
+    // Real-time Display
+    db.ref('fuel_status/').on('value', (snapshot) => {
+        const dataTable = document.getElementById('dataTable');
+        dataTable.innerHTML = "";
+        snapshot.forEach((child) => {
+            const data = child.val();
+            const name = child.key;
+            
+            let color = data.status === "ပြတ်နေသည်" ? "bg-red" : (data.status === "တန်းစီနေရဆဲ" ? "bg-orange" : "bg-green");
+
+            dataTable.innerHTML += `<tr>
+                <td><strong>${name}</strong><br><small style="color:gray">${data.date}</small></td>
+                <td><span class="status-badge ${color}">${data.status}</span><br><small>${data.time}</small></td>
+                <td>
+                    <button class="btn-edit" onclick="editData('${name}', '${data.status}')">✏️</button>
+                    <button class="btn-delete" onclick="deleteData('${name}')">🗑️</button>
+                </td>
+            </tr>`;
+        });
+    });
+</script>
+
+</body>
+</html>
