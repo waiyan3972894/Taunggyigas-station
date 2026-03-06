@@ -3,58 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuel Status Myanmar</title>
+    <title>Taunggyi Community Hub</title>
     <style>
-        body { font-family: sans-serif; background: #eceff1; margin: 0; padding: 15px; }
-        .container { max-width: 600px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; }
+        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --sub: #64748b; --danger: #ef4444; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        .header { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 25px 25px; }
+        .container { max-width: 600px; margin: -20px auto 100px; padding: 0 15px; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border-bottom: 1px solid #eee; padding: 12px 8px; text-align: left; }
-        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8em; color: white; display: inline-block; }
-        .bg-green { background: #28a745; }
-        .bg-red { background: #dc3545; }
-        .bg-orange { background: #ffc107; color: #000; }
+        .tabs { display: flex; background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .tab.active { border-bottom-color: var(--primary); color: var(--primary); }
 
-        /* Action Buttons */
-        .btn-edit { color: #007bff; cursor: pointer; margin-right: 10px; font-size: 18px; border: none; background: none; }
-        .btn-delete { color: #dc3545; cursor: pointer; font-size: 18px; border: none; background: none; }
+        .search-box { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; box-sizing: border-box; }
+        .card { background: var(--card); border-radius: 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; margin-bottom: 5px; }
+        .bg-green { background: #dcfce7; color: #166534; }
+        .bg-red { background: #fee2e2; color: #991b1b; }
+        .bg-blue { background: #dbeafe; color: #1e40af; }
 
-        /* Floating Button */
-        .fab {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 60px; height: 60px; background: #007bff;
-            border-radius: 50%; color: white; border: none;
-            font-size: 30px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+        .call-btn { background: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; font-weight: bold; margin-top: 10px; }
+        .verify-btn { background: #fff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
+        .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 18px; border: none; font-size: 30px; cursor: pointer; box-shadow: 0 10px 15px rgba(37,99,235,0.4); }
 
-        /* Popup Form */
-        .modal {
-            display: none; position: fixed; z-index: 100;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
-        }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; position: relative; }
-        input, select, .submit-btn { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .submit-btn { background: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
-    </style> 
+        .warning-box { background: #fffbeb; border: 1px solid #fde68a; padding: 10px; border-radius: 10px; font-size: 0.8rem; color: #92400e; margin-bottom: 15px; line-height: 1.4; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
+        .submit-btn { width: 100%; background: var(--primary); color: white; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    </style>
 </head>
 <body>
 
+<div class="header">
+    <h1 style="margin:0; font-size: 1.4rem;">⛰️ Taunggyi Hub</h1>
+    <p style="margin:5px 0 0; opacity:0.8;">တောင်ကြီးမြို့ ဆီသတင်းနှင့် ပျောက်/ကောက်</p>
+</div>
+
 <div class="container">
-    <div class="card">
-        <h2>တောင်ကြီး စက်သုံးဆီဆိုင်သတင်းများ</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ဆိုင်အမည်</th>
-                    <th>အခြေအနေ</th>
-                    <th>ပြင်/ဖျက်</th>
-                </tr>
-            </thead>
-            <tbody id="dataTable"></tbody>
-        </table>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('fuel')">⛽ ဆီသတင်း</div>
+        <div class="tab" onclick="switchTab('lost')">🔍 ပျောက်/ကောက်</div>
+    </div>
+
+    <input type="text" id="searchBar" class="search-box" placeholder="ရှာဖွေရန်..." onkeyup="filterData()">
+
+    <div id="fuelSection">
+        <div id="fuelList"></div>
+    </div>
+
+    <div id="lostSection" style="display:none;">
+        <div class="warning-box">
+            ⚠️ <b>သတိပေးချက်:</b> ပစ္စည်းပိုင်ရှင်အစစ်ဖြစ်ကြောင်း သေချာစွာစစ်ဆေးပါ။ ပစ္စည်းမရခင် ငွေကြိုလွှဲခြင်း (ဥပမာ-ဆုကြေး၊ ပို့ခ) လုံးဝမပြုလုပ်ပါနှင့်။
+        </div>
+        <div id="lostList"></div>
     </div>
 </div>
 
@@ -62,15 +64,26 @@
 
 <div id="inputModal" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle">သတင်းအသစ်တင်ရန်</h3>
-        <input type="text" id="shopName" placeholder="ဆိုင်အမည်">
-        <select id="status">
-            <option value="ရရှိနိုင်သည်">✅ ဆီရှိသည်</option>
-            <option value="ပြတ်နေသည်">❌ ဆီပြတ်နေသည်</option>
-            <option value="တန်းစီနေရဆဲ">⏳ တန်းစီနေရဆဲ</option>
-        </select>
-        <button class="submit-btn" onclick="saveData()">သိမ်းဆည်းမည်</button>
-        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; cursor:pointer;">မလုပ်တော့ပါ</button>
+        <h3 id="modalTitle" style="margin-top:0">သတင်းတင်ရန်</h3>
+        <div id="fuelInputs">
+            <input type="text" id="shopName" placeholder="ဆိုင်အမည် (ဥပမာ-Denko)">
+            <select id="fuelStatus">
+                <option value="ရရှိနိုင်သည်">✅ ဆီရှိသည်</option>
+                <option value="ပြတ်နေသည်">❌ ဆီပြတ်နေသည်</option>
+                <option value="တန်းစီနေရဆဲ">⏳ တန်းစီနေရဆဲ</option>
+            </select>
+        </div>
+        <div id="lostInputs" style="display:none;">
+            <select id="lostStatus">
+                <option value="ပျောက်ဆုံး">❌ ပျောက်ဆုံး</option>
+                <option value="ကောက်ရ">✨ ကောက်ရ</option>
+            </select>
+            <input type="text" id="itemName" placeholder="ပစ္စည်းအမည် (ဥပမာ-မှတ်ပုံတင်)">
+            <textarea id="itemDesc" placeholder="အသေးစိတ်အချက်အလက် (ဥပမာ-နေရာ၊ အရောင်)"></textarea>
+            <input type="tel" id="contactPhone" placeholder="ဆက်သွယ်ရန်ဖုန်း (ဥပမာ-091234567)">
+        </div>
+        <button class="submit-btn" onclick="saveData()">အတည်ပြုတင်မည်</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:10px;">ပိတ်မည်</button>
     </div>
 </div>
 
@@ -78,8 +91,8 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-    // Firebase Config (သင့် Key များ ထည့်ပါ)
-    const firebaseConfig = {
+    // Firebase Config
+     const firebaseConfig = {
     apiKey: "AIzaSyCmsK55PSk5rYMIqvj8Xkadf1tFhkhsKxc",
     authDomain: "taunggyigasstation.firebaseapp.com",
     databaseURL: "https://taunggyigasstation-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -88,75 +101,94 @@
     messagingSenderId: "206030659711",
     appId: "1:206030659711:web:6c320045e1db2c899a5f4a"
   };
-    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    let currentTab = 'fuel';
+    const ADMIN_PASS = "tg123";
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        document.getElementById('fuelSection').style.display = tab === 'fuel' ? 'block' : 'none';
+        document.getElementById('lostSection').style.display = tab === 'lost' ? 'block' : 'none';
+    }
+
+    function timeAgo(ts) {
+        if(!ts) return "";
+        const diff = Math.floor((new Date() - new Date(ts)) / 1000);
+        if(diff < 60) return 'ခုနတင်';
+        if(diff < 3600) return Math.floor(diff/60) + ' မိနစ်က';
+        if(diff < 86400) return Math.floor(diff/3600) + ' နာရီက';
+        return Math.floor(diff/86400) + ' ရက်က';
+    }
 
     function openModal() {
-        document.getElementById('modalTitle').innerText = "သတင်းအသစ်တင်ရန်";
-        document.getElementById('shopName').disabled = false;
+        document.getElementById('fuelInputs').style.display = currentTab === 'fuel' ? 'block' : 'none';
+        document.getElementById('lostInputs').style.display = currentTab === 'lost' ? 'block' : 'none';
         document.getElementById('inputModal').style.display = 'flex';
     }
 
-    function closeModal() {
-        document.getElementById('inputModal').style.display = 'none';
-        document.getElementById('shopName').value = "";
-    }
+    function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
 
-    // Data သိမ်းခြင်း (Update/Create)
     function saveData() {
-        const name = document.getElementById('shopName').value;
-        const status = document.getElementById('status').value;
-        const dateNow = new Date().toLocaleDateString();
-        const timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-        if(!name) return alert("အမည်ထည့်ပါ");
-
-        db.ref('fuel_status/' + name).set({
-            status: status,
-            date: dateNow,
-            time: timeNow
-        }).then(() => closeModal());
-    }
-
-    // Edit Function
-    function editData(name, status) {
-        document.getElementById('modalTitle').innerText = "သတင်းပြင်ရန်";
-        document.getElementById('shopName').value = name;
-        document.getElementById('shopName').disabled = true; // အမည်ကို ပြင်လို့မရအောင် ပိတ်ထားခြင်း
-        document.getElementById('status').value = status;
-        document.getElementById('inputModal').style.display = 'flex';
-    }
-
-    // Delete Function
-    function deleteData(name) {
-        if(confirm(name + " သတင်းကို ဖျက်မှာ သေချာပါသလား?")) {
-            db.ref('fuel_status/' + name).remove();
+        const ts = new Date().toISOString();
+        if(currentTab === 'fuel') {
+            const name = document.getElementById('shopName').value;
+            if(!name) return alert("ဆိုင်အမည်ထည့်ပါ");
+            db.ref('fuel_status/' + name).update({ status: document.getElementById('fuelStatus').value, updatedAt: ts });
+        } else {
+            const item = document.getElementById('itemName').value;
+            const phone = document.getElementById('contactPhone').value;
+            if(!item || !phone) return alert("အချက်အလက်ပြည့်စုံစွာထည့်ပါ");
+            db.ref('lost_found/').push({ item, desc: document.getElementById('itemDesc').value, phone, status: document.getElementById('lostStatus').value, updatedAt: ts });
         }
+        closeModal();
     }
 
-    // Real-time Display
-    db.ref('fuel_status/').on('value', (snapshot) => {
-        const dataTable = document.getElementById('dataTable');
-        dataTable.innerHTML = "";
-        snapshot.forEach((child) => {
-            const data = child.val();
-            const name = child.key;
-            
-            let color = data.status === "ပြတ်နေသည်" ? "bg-red" : (data.status === "တန်းစီနေရဆဲ" ? "bg-orange" : "bg-green");
+    function verifyShop(name) {
+        if(localStorage.getItem('v_'+name)) return alert("ထောက်ခံပြီးပါပြီ");
+        db.ref('fuel_status/'+name+'/verify').transaction(c => (c||0)+1);
+        localStorage.setItem('v_'+name, 'true');
+    }
 
-            dataTable.innerHTML += `<tr>
-                <td><strong>${name}</strong><br><small style="color:gray">${data.date}</small></td>
-                <td><span class="status-badge ${color}">${data.status}</span><br><small>${data.time}</small></td>
-                <td>
-                    <button class="btn-edit" onclick="editData('${name}', '${data.status}')">✏️</button>
-                    <button class="btn-delete" onclick="deleteData('${name}')">🗑️</button>
-                </td>
-            </tr>`;
+    function deleteItem(path, id) {
+        if(prompt("ဖျက်ရန် Admin Password ရိုက်ပါ") === ADMIN_PASS) db.ref(path + id).remove();
+        else alert("Password မှားယွင်းပါသည်");
+    }
+
+    // Load Data
+    db.ref('fuel_status/').on('value', snap => {
+        const div = document.getElementById('fuelList'); div.innerHTML = "";
+        snap.forEach(c => {
+            const d = c.val(), n = c.key;
+            const color = d.status === 'ပြတ်နေသည်' ? 'bg-red' : (d.status === 'တန်းစီနေရဆဲ' ? 'bg-orange' : 'bg-green');
+            div.innerHTML += `<div class="card">
+                <div style="display:flex; justify-content:space-between"><b>${n}</b><button class="verify-btn" onclick="deleteItem('fuel_status/','${n}')">🗑️</button></div>
+                <div class="badge ${color}">${d.status}</div><br>
+                <small>${timeAgo(d.updatedAt)}</small><br>
+                <button class="verify-btn" onclick="verifyShop('${n}')">✅ ထောက်ခံ (${d.verify||0})</button>
+            </div>`;
+        });
+    });
+
+    db.ref('lost_found/').on('value', snap => {
+        const div = document.getElementById('lostList'); div.innerHTML = "";
+        snap.forEach(c => {
+            const d = c.val();
+            const color = d.status === 'ပျောက်ဆုံး' ? 'bg-red' : 'bg-green';
+            div.innerHTML += `<div class="card">
+                <div style="display:flex; justify-content:space-between">
+                    <span class="badge ${color}">${d.status}</span>
+                    <button class="verify-btn" onclick="deleteItem('lost_found/','${c.key}')">🗑️</button>
+                </div>
+                <b>${d.item}</b>
+                <p style="margin:5px 0; font-size:0.9rem; color:#475569">${d.desc}</p>
+                <small>${timeAgo(d.updatedAt)}</small><br>
+                <a href="tel:${d.phone}" class="call-btn">📞 ဆက်သွယ်ရန်</a>
+            </div>`;
         });
     });
 </script>
-
 </body>
-
 </html>
