@@ -15,26 +15,153 @@
         .header { background: #2563eb; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .container { max-width: 600px; margin: 15px auto; padding: 0 15px; }
         
-        /* Tabs */
         .tabs { display: flex; background: white; border-radius: 15px; margin-bottom: 20px; overflow-x: auto; position: sticky; top: 10px; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab { flex: 1; min-width: 80px; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.3s; border-bottom: 3px solid transparent; }
         .tab.active { border-bottom-color: var(--primary); color: var(--primary); background: #eff6ff; }
 
-        .card { background: var(--card); border-radius: 15px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 6px solid var(--primary); position: relative; }
+        .card { background: var(--card); border-radius: 15px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 6px solid var(--primary); position: relative; overflow: hidden; }
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 8px; }
         .bg-green { background: #dcfce7; color: #166534; }
         .bg-red { background: #fee2e2; color: #991b1b; }
         .bg-blue { background: #dbeafe; color: #1e40af; }
 
-        .btn-call { background: #16a34a; color: white; text-decoration: none; padding: 10px 20px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+        .post-img { width: 100%; height: auto; max-height: 350px; object-fit: cover; border-radius: 12px; margin: 10px 0; border: 1px solid #eee; display: block; }
+        
+        .btn-call { background: #16a34a; color: white; text-decoration: none; padding: 12px 20px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; font-weight: bold; margin-top: 10px; font-size: 0.9rem; width: 100%; justify-content: center; box-sizing: border-box; }
         
         .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(37,99,235,0.4); cursor: pointer; z-index: 999; }
         
-        .warning { background: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 12px; font-size: 0.8rem; color: #92400e; margin-bottom: 15px; display: none; }
-
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; }
-        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; box-sizing: border-box; }
+        label { font-size: 0.75rem; color: #64748b; font-weight: bold; display: block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 style="margin:0; font-size: 1.5rem;">⛰️ Taunggyi Hub</h1>
+    <p style="margin:5px 0 0; opacity: 0.9; font-size: 0.9rem;">တောင်ကြီးမြို့အတွက် အားကိုးရာ</p>
+</div>
+
+<div class="container">
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('fuel')">⛽ ဆီ</div>
+        <div class="tab" onclick="switchTab('lost')">🔍 ပျောက်/ကောက်</div>
+        <div class="tab" onclick="switchTab('power')">💡 မီး</div>
+        <div class="tab" onclick="switchTab('emergency')">☎️ အရေးပေါ်</div>
+    </div>
+    <div id="displayArea"></div>
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div id="inputModal" class="modal">
+    <div class="modal-content">
+        <h3 style="margin-top:0">သတင်းတင်ရန်</h3>
+        <div id="formFields"></div>
+        <button onclick="saveData()" style="width:100%; background:var(--primary); color:white; padding:15px; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">တင်မည်</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">ပိတ်မည်</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    // Firebase Config (Keep original)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmsK55PSk5rYMIqvj8Xkadf1tFhkhsKxc",
+        authDomain: "taunggyigasstation.firebaseapp.com",
+        databaseURL: "https://taunggyigasstation-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "taunggyigasstation",
+        storageBucket: "taunggyigasstation.firebasestorage.app",
+        messagingSenderId: "206030659711",
+        appId: "1:206030659711:web:6c320045e1db2c899a5f4a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let currentTab = 'fuel';
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        loadData();
+    }
+
+    function openModal() {
+        if(currentTab === 'emergency') return alert("အရေးပေါ်နံပါတ်များကို Admin သာ ပြင်ဆင်နိုင်သည်");
+        const form = document.getElementById('formFields');
+        if(currentTab === 'fuel') {
+            form.innerHTML = `<input id="val1" placeholder="ဆိုင်အမည်"> <select id="val2"><option>ဆီရှိသည် ✅</option><option>ဆီပြတ်နေသည် ❌</option><option>တန်းစီနေဆဲ ⏳</option></select>`;
+        } else if(currentTab === 'lost') {
+            form.innerHTML = `<input id="val1" placeholder="ပစ္စည်းအမည်"><textarea id="val2" placeholder="အသေးစိတ် နှင့် ဖုန်းနံပါတ်"></textarea><label>📷 ပုံ Link (Optional)</label><input id="valImg" placeholder="https://i.ibb.co/xxx/img.jpg">`;
+        } else if(currentTab === 'power') {
+            form.innerHTML = `<input id="val1" placeholder="ရပ်ကွက်အမည်"> <select id="val2"><option>မီးလာနေသည် 💡</option><option>မီးပျက်နေသည် 🌑</option></select>`;
+        }
+        document.getElementById('inputModal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
+
+    function saveData() {
+        const v1 = document.getElementById('val1').value;
+        const v2 = document.getElementById('val2').value;
+        const vImg = document.getElementById('valImg') ? document.getElementById('valImg').value : "";
+        const time = new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, day: 'numeric', month: 'short' });
+
+        if(!v1 || !v2) return alert("အချက်အလက် ပြည့်စုံစွာထည့်ပါ");
+
+        let data = { title: v1, status: v2, img: vImg, time: time, timestamp: Date.now() };
+        let path = currentTab === 'fuel' ? 'fuel/' + v1 : (currentTab === 'power' ? 'power/' + v1 : 'lost/');
+
+        if(currentTab === 'lost') db.ref(path).push(data);
+        else db.ref(path).set(data);
+
+        closeModal();
+    }
+
+    function loadData() {
+        const display = document.getElementById('displayArea');
+        display.innerHTML = "<p style='text-align:center; opacity:0.5;'>Loading...</p>";
+        
+        if(currentTab === 'emergency') {
+            display.innerHTML = `<div class="card"><b>🚒 မီးသတ်</b><br><a href="tel:08121222" class="btn-call">📞 Call 08121222</a></div><div class="card"><b>🚑 ပဏ္ဍိတရုံ</b><br><a href="tel:09428310111" class="btn-call">📞 Call 09428310111</a></div>`;
+            return;
+        }
+
+        db.ref(currentTab + '/').on('value', snap => {
+            display.innerHTML = "";
+            let items = [];
+            snap.forEach(child => { 
+                let d = child.val();
+                if(!d.timestamp) d.timestamp = 0; 
+                items.push(d); 
+            });
+            items.sort((a, b) => b.timestamp - a.timestamp);
+
+            items.forEach(d => {
+                const s = d.status || "";
+                const color = (s.includes('ရှိ') || s.includes('လာ')) ? 'bg-green' : (s.includes('ပြတ်') || s.includes('ပျက်') ? 'bg-red' : 'bg-blue');
+                const phone = s.match(/\d+/);
+                
+                display.innerHTML += `
+                    <div class="card">
+                        <span class="badge ${color}">${currentTab === 'lost' ? 'သတင်း' : s}</span><br>
+                        <b style="font-size:1.1rem">${d.title}</b>
+                        ${d.img ? `<img src="${d.img}" class="post-img" onerror="this.style.display='none'">` : ''}
+                        <p style="margin:8px 0; font-size:0.9rem; color:#64748b; white-space: pre-line;">${currentTab === 'lost' ? s : ''}</p>
+                        <small style="color:#94a3b8">🕒 ${d.time || ''}</small>
+                        ${(currentTab === 'lost' && phone) ? `<a href="tel:${phone[0]}" class="btn-call">📞 ဆက်သွယ်ရန်</a>` : ''}
+                    </div>`;
+            });
+        });
+    }
+    window.onload = loadData;
+</script>
+</body>
+</html>        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -176,3 +303,4 @@
 </script>
 </body>
 </html>
+
