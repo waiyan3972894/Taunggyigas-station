@@ -4,60 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taunggyi Community Hub</title>
-    <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --sub: #64748b; --danger: #ef4444; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        .header { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 25px 25px; }
-        .container { max-width: 600px; margin: -20px auto 100px; padding: 0 15px; }
-        
-        .tabs { display: flex; background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .tab.active { border-bottom-color: var(--primary); color: var(--primary); }
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2991/2991201.png">
 
-        .search-box { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; box-sizing: border-box; }
-        .card { background: var(--card); border-radius: 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        .header { background: #2563eb; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 600px; margin: 15px auto; padding: 0 15px; }
         
-        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; margin-bottom: 5px; }
+        /* Tabs */
+        .tabs { display: flex; background: white; border-radius: 15px; margin-bottom: 20px; overflow-x: auto; position: sticky; top: 10px; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .tab { flex: 1; min-width: 80px; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .tab.active { border-bottom-color: var(--primary); color: var(--primary); background: #eff6ff; }
+
+        .card { background: var(--card); border-radius: 15px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 6px solid var(--primary); position: relative; }
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 8px; }
         .bg-green { background: #dcfce7; color: #166534; }
         .bg-red { background: #fee2e2; color: #991b1b; }
         .bg-blue { background: #dbeafe; color: #1e40af; }
 
-        .call-btn { background: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; font-weight: bold; margin-top: 10px; }
-        .verify-btn { background: #fff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 18px; border: none; font-size: 30px; cursor: pointer; box-shadow: 0 10px 15px rgba(37,99,235,0.4); }
+        .btn-call { background: #16a34a; color: white; text-decoration: none; padding: 10px 20px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+        
+        .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(37,99,235,0.4); cursor: pointer; z-index: 999; }
+        
+        .warning { background: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 12px; font-size: 0.8rem; color: #92400e; margin-bottom: 15px; display: none; }
 
-        .warning-box { background: #fffbeb; border: 1px solid #fde68a; padding: 10px; border-radius: 10px; font-size: 0.8rem; color: #92400e; margin-bottom: 15px; line-height: 1.4; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
-        .submit-btn { width: 100%; background: var(--primary); color: white; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; z-index: 2000; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 style="margin:0; font-size: 1.4rem;">⛰️ Taunggyi Hub</h1>
-    <p style="margin:5px 0 0; opacity:0.8;">တောင်ကြီးမြို့ ဆီသတင်းနှင့် ပျောက်/ကောက်</p>
+    <h1 style="margin:0; font-size: 1.5rem;">⛰️ Taunggyi Hub</h1>
+    <p style="margin:5px 0 0; opacity: 0.9; font-size: 0.9rem;">တောင်ကြီးမြို့အတွက် အားကိုးရာ</p>
 </div>
 
 <div class="container">
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('fuel')">⛽ ဆီသတင်း</div>
+        <div class="tab active" onclick="switchTab('fuel')">⛽ ဆီ</div>
         <div class="tab" onclick="switchTab('lost')">🔍 ပျောက်/ကောက်</div>
+        <div class="tab" onclick="switchTab('power')">💡 မီး</div>
+        <div class="tab" onclick="switchTab('emergency')">☎️ အရေးပေါ်</div>
     </div>
 
-    <input type="text" id="searchBar" class="search-box" placeholder="ရှာဖွေရန်..." onkeyup="filterData()">
-
-    <div id="fuelSection">
-        <div id="fuelList"></div>
+    <div id="lostWarning" class="warning">
+        ⚠️ <b>သတိပေးချက်:</b> ပစ္စည်းမရခင် ငွေကြိုလွှဲခြင်း လုံးဝမပြုလုပ်ပါနှင့်။ ပိုင်ရှင်အစစ် ဟုတ်မဟုတ် သေချက်စစ်ဆေးပါ။
     </div>
 
-    <div id="lostSection" style="display:none;">
-        <div class="warning-box">
-            ⚠️ <b>သတိပေးချက်:</b> ပစ္စည်းပိုင်ရှင်အစစ်ဖြစ်ကြောင်း သေချာစွာစစ်ဆေးပါ။ ပစ္စည်းမရခင် ငွေကြိုလွှဲခြင်း (ဥပမာ-ဆုကြေး၊ ပို့ခ) လုံးဝမပြုလုပ်ပါနှင့်။
-        </div>
-        <div id="lostList"></div>
-    </div>
+    <div id="displayArea"></div>
 </div>
 
 <button class="fab" onclick="openModal()">+</button>
@@ -65,25 +64,9 @@
 <div id="inputModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle" style="margin-top:0">သတင်းတင်ရန်</h3>
-        <div id="fuelInputs">
-            <input type="text" id="shopName" placeholder="ဆိုင်အမည် (ဥပမာ-Denko)">
-            <select id="fuelStatus">
-                <option value="ရရှိနိုင်သည်">✅ ဆီရှိသည်</option>
-                <option value="ပြတ်နေသည်">❌ ဆီပြတ်နေသည်</option>
-                <option value="တန်းစီနေရဆဲ">⏳ တန်းစီနေရဆဲ</option>
-            </select>
-        </div>
-        <div id="lostInputs" style="display:none;">
-            <select id="lostStatus">
-                <option value="ပျောက်ဆုံး">❌ ပျောက်ဆုံး</option>
-                <option value="ကောက်ရ">✨ ကောက်ရ</option>
-            </select>
-            <input type="text" id="itemName" placeholder="ပစ္စည်းအမည် (ဥပမာ-မှတ်ပုံတင်)">
-            <textarea id="itemDesc" placeholder="အသေးစိတ်အချက်အလက် (ဥပမာ-နေရာ၊ အရောင်)"></textarea>
-            <input type="tel" id="contactPhone" placeholder="ဆက်သွယ်ရန်ဖုန်း (ဥပမာ-091234567)">
-        </div>
-        <button class="submit-btn" onclick="saveData()">အတည်ပြုတင်မည်</button>
-        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:10px;">ပိတ်မည်</button>
+        <div id="formFields"></div>
+        <button onclick="saveData()" style="width:100%; background:var(--primary); color:white; padding:15px; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">တင်မည်</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">ပိတ်မည်</button>
     </div>
 </div>
 
@@ -91,104 +74,105 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-    // Firebase Config
-     const firebaseConfig = {
-    apiKey: "AIzaSyCmsK55PSk5rYMIqvj8Xkadf1tFhkhsKxc",
-    authDomain: "taunggyigasstation.firebaseapp.com",
-    databaseURL: "https://taunggyigasstation-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "taunggyigasstation",
-    storageBucket: "taunggyigasstation.firebasestorage.app",
-    messagingSenderId: "206030659711",
-    appId: "1:206030659711:web:6c320045e1db2c899a5f4a"
-  };
+    // သင်ပေးထားသော Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmsK55PSk5rYMIqvj8Xkadf1tFhkhsKxc",
+        authDomain: "taunggyigasstation.firebaseapp.com",
+        databaseURL: "https://taunggyigasstation-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "taunggyigasstation",
+        storageBucket: "taunggyigasstation.firebasestorage.app",
+        messagingSenderId: "206030659711",
+        appId: "1:206030659711:web:6c320045e1db2c899a5f4a"
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     let currentTab = 'fuel';
-    const ADMIN_PASS = "tg123";
 
     function switchTab(tab) {
         currentTab = tab;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         event.currentTarget.classList.add('active');
-        document.getElementById('fuelSection').style.display = tab === 'fuel' ? 'block' : 'none';
-        document.getElementById('lostSection').style.display = tab === 'lost' ? 'block' : 'none';
-    }
-
-    function timeAgo(ts) {
-        if(!ts) return "";
-        const diff = Math.floor((new Date() - new Date(ts)) / 1000);
-        if(diff < 60) return 'ခုနတင်';
-        if(diff < 3600) return Math.floor(diff/60) + ' မိနစ်က';
-        if(diff < 86400) return Math.floor(diff/3600) + ' နာရီက';
-        return Math.floor(diff/86400) + ' ရက်က';
+        document.getElementById('lostWarning').style.display = (tab === 'lost') ? 'block' : 'none';
+        loadData();
     }
 
     function openModal() {
-        document.getElementById('fuelInputs').style.display = currentTab === 'fuel' ? 'block' : 'none';
-        document.getElementById('lostInputs').style.display = currentTab === 'lost' ? 'block' : 'none';
+        if(currentTab === 'emergency') return alert("အရေးပေါ်နံပါတ်များကို Admin သာ ပြင်ဆင်နိုင်သည်");
+        const form = document.getElementById('formFields');
+        if(currentTab === 'fuel') {
+            form.innerHTML = `<input id="val1" placeholder="ဆိုင်အမည် (ဥပမာ-Denko)"> <select id="val2"><option>ဆီရှိသည် ✅</option><option>ဆီပြတ်နေသည် ❌</option><option>တန်းစီနေဆဲ ⏳</option></select>`;
+        } else if(currentTab === 'lost') {
+            form.innerHTML = `<input id="val1" placeholder="ပစ္စည်းအမည်"> <textarea id="val2" placeholder="နေရာ၊ အသေးစိတ် နှင့် ဆက်သွယ်ရန်ဖုန်း"></textarea>`;
+        } else if(currentTab === 'power') {
+            form.innerHTML = `<input id="val1" placeholder="ရပ်ကွက်အမည်"> <select id="val2"><option>မီးလာနေသည် 💡</option><option>မီးပျက်နေသည် 🌑</option></select>`;
+        }
         document.getElementById('inputModal').style.display = 'flex';
     }
 
     function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
 
     function saveData() {
-        const ts = new Date().toISOString();
-        if(currentTab === 'fuel') {
-            const name = document.getElementById('shopName').value;
-            if(!name) return alert("ဆိုင်အမည်ထည့်ပါ");
-            db.ref('fuel_status/' + name).update({ status: document.getElementById('fuelStatus').value, updatedAt: ts });
-        } else {
-            const item = document.getElementById('itemName').value;
-            const phone = document.getElementById('contactPhone').value;
-            if(!item || !phone) return alert("အချက်အလက်ပြည့်စုံစွာထည့်ပါ");
-            db.ref('lost_found/').push({ item, desc: document.getElementById('itemDesc').value, phone, status: document.getElementById('lostStatus').value, updatedAt: ts });
-        }
+        const v1 = document.getElementById('val1').value;
+        const v2 = document.getElementById('val2').value;
+        const time = new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, day: 'numeric', month: 'short' });
+
+        if(!v1 || !v2) return alert("အချက်အလက် ပြည့်စုံစွာထည့်ပါ");
+
+        let path = currentTab === 'fuel' ? 'fuel/' + v1 : (currentTab === 'power' ? 'power/' + v1 : 'lost/');
+        let data = { title: v1, status: v2, time: time, timestamp: Date.now() };
+
+        if(currentTab === 'lost') db.ref(path).push(data);
+        else db.ref(path).set(data);
+
         closeModal();
     }
 
-    function verifyShop(name) {
-        if(localStorage.getItem('v_'+name)) return alert("ထောက်ခံပြီးပါပြီ");
-        db.ref('fuel_status/'+name+'/verify').transaction(c => (c||0)+1);
-        localStorage.setItem('v_'+name, 'true');
+    function loadData() {
+        const display = document.getElementById('displayArea');
+        display.innerHTML = "<p style='text-align:center; opacity:0.5;'>Loading...</p>";
+        
+        if(currentTab === 'emergency') {
+            display.innerHTML = `
+                <div class="card"><b>🚒 မီးသတ် (တောင်ကြီး)</b><br><a href="tel:08121222" class="btn-call">📞 ခေါ်ဆိုရန် - 08121222</a></div>
+                <div class="card"><b>🚑 ပဏ္ဍိတရုံ လူမှုကူညီရေး</b><br><a href="tel:09428310111" class="btn-call">📞 ခေါ်ဆိုရန် - 09428310111</a></div>
+                <div class="card"><b>🚑 ဖြူစင်မေတ္တာ နာရေးကူညီမှု</b><br><a href="tel:09428362362" class="btn-call">📞 ခေါ်ဆိုရန် - 09428362362</a></div>`;
+            return;
+        }
+
+        db.ref(currentTab + '/').on('value', snap => {
+            display.innerHTML = "";
+            let items = [];
+            snap.forEach(child => {
+                items.push(child.val());
+            });
+
+            // အသစ်ဆုံးကို အပေါ်ဆုံးပို့ရန် Sorting လုပ်ခြင်း
+            items.sort((a, b) => b.timestamp - a.timestamp);
+
+            if(items.length === 0) display.innerHTML = "<p style='text-align:center; opacity:0.5; margin-top:20px;'>သတင်းမရှိသေးပါ။</p>";
+
+            items.forEach(d => {
+                const isStatusValid = d.status.includes('ရှိ') || d.status.includes('လာ');
+                const isStatusDanger = d.status.includes('ပြတ်') || d.status.includes('ပျက်');
+                const color = isStatusValid ? 'bg-green' : (isStatusDanger ? 'bg-red' : 'bg-blue');
+                
+                display.innerHTML += `
+                    <div class="card">
+                        <span class="badge ${color}">${d.status}</span><br>
+                        <b style="font-size:1.1rem">${d.title}</b>
+                        <p style="margin:8px 0; font-size:0.9rem; color:#64748b;">${currentTab === 'lost' ? d.status : ''}</p>
+                        <small style="color:#94a3b8">🕒 ${d.time}</small>
+                        ${currentTab === 'lost' ? `<br><a href="tel:${d.status.match(/\d+/)}" class="btn-call">📞 ဆက်သွယ်ရန်</a>` : ''}
+                    </div>`;
+            });
+        });
     }
 
-    function deleteItem(path, id) {
-        if(prompt("ဖျက်ရန် Admin Password ရိုက်ပါ") === ADMIN_PASS) db.ref(path + id).remove();
-        else alert("Password မှားယွင်းပါသည်");
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
     }
 
-    // Load Data
-    db.ref('fuel_status/').on('value', snap => {
-        const div = document.getElementById('fuelList'); div.innerHTML = "";
-        snap.forEach(c => {
-            const d = c.val(), n = c.key;
-            const color = d.status === 'ပြတ်နေသည်' ? 'bg-red' : (d.status === 'တန်းစီနေရဆဲ' ? 'bg-orange' : 'bg-green');
-            div.innerHTML += `<div class="card">
-                <div style="display:flex; justify-content:space-between"><b>${n}</b><button class="verify-btn" onclick="deleteItem('fuel_status/','${n}')">🗑️</button></div>
-                <div class="badge ${color}">${d.status}</div><br>
-                <small>${timeAgo(d.updatedAt)}</small><br>
-                <button class="verify-btn" onclick="verifyShop('${n}')">✅ ထောက်ခံ (${d.verify||0})</button>
-            </div>`;
-        });
-    });
-
-    db.ref('lost_found/').on('value', snap => {
-        const div = document.getElementById('lostList'); div.innerHTML = "";
-        snap.forEach(c => {
-            const d = c.val();
-            const color = d.status === 'ပျောက်ဆုံး' ? 'bg-red' : 'bg-green';
-            div.innerHTML += `<div class="card">
-                <div style="display:flex; justify-content:space-between">
-                    <span class="badge ${color}">${d.status}</span>
-                    <button class="verify-btn" onclick="deleteItem('lost_found/','${c.key}')">🗑️</button>
-                </div>
-                <b>${d.item}</b>
-                <p style="margin:5px 0; font-size:0.9rem; color:#475569">${d.desc}</p>
-                <small>${timeAgo(d.updatedAt)}</small><br>
-                <a href="tel:${d.phone}" class="call-btn">📞 ဆက်သွယ်ရန်</a>
-            </div>`;
-        });
-    });
+    window.onload = loadData;
 </script>
 </body>
 </html>
