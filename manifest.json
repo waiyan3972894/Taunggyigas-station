@@ -1,0 +1,15 @@
+{
+  "short_name": "TG Hub",
+  "name": "Taunggyi Community Hub",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2991/2991201.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#2563eb",
+  "theme_color": "#2563eb",
+  "display": "standalone"
+}
