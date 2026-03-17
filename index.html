@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taunggyi Hub - Community App</title>
+    <title>Taunggyi Hub - Community</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
         * { box-sizing: border-box; font-family: 'Segoe UI', 'Pyidaungsu', sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; padding-bottom: 100px; }
-
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: white; font-size: 0.85rem; border-bottom: 1px solid #e2e8f0; }
         .user-chip { background: #f1f5f9; padding: 5px 12px; border-radius: 20px; color: var(--primary); font-weight: 600; }
-        .header { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 30px 30px; }
         .leaderboard { background: rgba(255,255,255,0.15); border-radius: 15px; padding: 12px; margin-top: 15px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); }
-        
         .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
         .tabs { display: flex; background: white; padding: 5px; border-radius: 18px; margin: 20px 0; position: sticky; top: 10px; z-index: 100; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 700; border-radius: 14px; color: #64748b; }
         .tab.active { background: var(--primary); color: white; }
-
         .card { background: var(--card); border-radius: 24px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02); }
         .card-title { font-size: 1.15rem; font-weight: 700; color: #0f172a; }
         .post-img { width: 100%; border-radius: 18px; margin: 12px 0; max-height: 350px; object-fit: cover; }
         .card-actions { border-top: 1px solid #f1f5f9; padding-top: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .like-btn { border: none; background: #f8fafc; padding: 8px 15px; border-radius: 10px; cursor: pointer; color: #64748b; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .like-btn { border: none; background: #f8fafc; padding: 8px 15px; border-radius: 10px; cursor: pointer; color: #64748b; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
         .like-btn.liked { color: #ef4444; background: #fef2f2; }
-
         .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 28px; width: 100%; max-width: 400px; }
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 1rem; outline: none; }
         .btn-primary { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; }
         .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.9rem; color: #64748b; cursor: pointer; text-decoration: underline; }
-
         .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 22px; border: none; font-size: 26px; box-shadow: 0 10px 20px rgba(37,99,235,0.4); cursor: pointer; z-index: 1000; }
     </style>
 </head>
@@ -76,7 +71,7 @@
 
 <div id="postModal" class="modal">
     <div class="modal-content">
-        <h3 style="margin-top:0">သတင်းအသစ်တင်မည်</h3>
+        <h3>သတင်းအသစ်တင်မည်</h3>
         <div id="formFields"></div>
         <button class="btn-primary" onclick="saveData()">တင်မည်</button>
         <button onclick="closeModal('postModal')" style="width:100%; border:none; background:none; color:gray; margin-top:15px;">ပိတ်မည်</button>
@@ -105,19 +100,18 @@
     let currentTab = 'fuel';
     let isRegisterMode = false;
 
-    // Auth Change Listener
     auth.onAuthStateChanged(user => {
         currentUser = user;
         if (user) {
             db.ref('users/' + user.uid).once('value', snap => {
-                const userData = snap.val();
-                document.getElementById('userInfo').innerText = `👤 ${userData?.name || user.email.split('@')[0]}`;
+                document.getElementById('userInfo').innerText = `👤 ${snap.val()?.name || user.email.split('@')[0]}`;
             });
             document.getElementById('authBtn').innerText = "LOGOUT";
         } else {
             document.getElementById('userInfo').innerText = "👋 မင်္ဂလာပါ ဧည့်သည်";
             document.getElementById('authBtn').innerText = "LOGIN";
         }
+        loadData(); // Auth ပြောင်းတိုင်း Like Button status တွေ ပြန်စစ်ဖို့
     });
 
     function switchAuthMode() {
@@ -132,16 +126,13 @@
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
         const name = document.getElementById('username').value;
-
         if (isRegisterMode) {
-            if(!name) return alert("အမည် ထည့်ပေးပါ");
             auth.createUserWithEmailAndPassword(email, pass).then(cred => {
                 db.ref('users/' + cred.user.uid).set({ name: name, email: email, points: 0 });
                 closeModal('authModal');
             }).catch(err => alert(err.message));
         } else {
-            auth.signInWithEmailAndPassword(email, pass).then(() => closeModal('authModal'))
-            .catch(err => alert("အီးမေးလ် သို့မဟုတ် Password မှားနေပါတယ်"));
+            auth.signInWithEmailAndPassword(email, pass).then(() => closeModal('authModal')).catch(err => alert("Email သို့မဟုတ် Password မှားယွင်းနေပါသည်"));
         }
     }
 
@@ -164,13 +155,9 @@
 
     function openPostModal() {
         const fields = document.getElementById('formFields');
-        if (currentTab === 'fuel') {
-            fields.innerHTML = `<input id="v1" placeholder="ဆိုင်အမည်"> <select id="v2"><option>ဆီရှိသည် ✅</option><option>ဆီပြတ်နေသည် ❌</option><option>တန်းစီနေဆဲ ⏳</option></select>`;
-        } else if (currentTab === 'power') {
-            fields.innerHTML = `<input id="v1" placeholder="ရပ်ကွက်အမည်"> <select id="v2"><option>မီးလာနေသည် 💡</option><option>မီးပျက်နေသည် 🌑</option></select>`;
-        } else {
-            fields.innerHTML = `<input id="v1" placeholder="ခေါင်းစဉ်"><textarea id="v2" placeholder="အသေးစိတ်အချက်အလက်" rows="3"></textarea><input id="vImg" placeholder="ပုံ Link (ImgBB)">`;
-        }
+        if (currentTab === 'fuel') { fields.innerHTML = `<input id="v1" placeholder="ဆိုင်အမည်"> <select id="v2"><option>ဆီရှိသည် ✅</option><option>ဆီပြတ်နေသည် ❌</option></select>`; }
+        else if (currentTab === 'power') { fields.innerHTML = `<input id="v1" placeholder="ရပ်ကွက်အမည်"> <select id="v2"><option>မီးလာနေသည် 💡</option><option>မီးပျက်နေသည် 🌑</option></select>`; }
+        else { fields.innerHTML = `<input id="v1" placeholder="ခေါင်းစဉ်"><textarea id="v2" placeholder="အသေးစိတ်" rows="3"></textarea><input id="vImg" placeholder="ပုံ Link (ImgBB)">`; }
         document.getElementById('postModal').style.display = 'flex';
     }
 
@@ -197,10 +184,24 @@
         });
     }
 
+    // Like Spamming ကာကွယ်ထားသော Like Function
     function giveLike(postId, authorUid) {
         if (!currentUser) return document.getElementById('authModal').style.display = 'flex';
-        db.ref(`${currentTab}/${postId}/likes`).transaction(c => (c || 0) + 1);
-        if(authorUid) db.ref('users/' + authorUid + '/points').transaction(p => (p || 0) + 10);
+        const likeRef = db.ref(`${currentTab}/${postId}/likedBy/${currentUser.uid}`);
+        
+        likeRef.once('value', snap => {
+            if (snap.exists()) {
+                // Like ပေးပြီးသားဆိုရင် Unlike လုပ်မယ် (Like ပြန်ဖြုတ်မယ်)
+                likeRef.remove();
+                db.ref(`${currentTab}/${postId}/likes`).transaction(c => (c || 1) - 1);
+                if(authorUid) db.ref('users/' + authorUid + '/points').transaction(p => (p || 0) - 10);
+            } else {
+                // Like မပေးရသေးရင် Like ပေးမယ်
+                likeRef.set(true);
+                db.ref(`${currentTab}/${postId}/likes`).transaction(c => (c || 0) + 1);
+                if(authorUid) db.ref('users/' + authorUid + '/points').transaction(p => (p || 0) + 10);
+            }
+        });
     }
 
     function loadData() {
@@ -213,10 +214,9 @@
             snap.forEach(child => { let d = child.val(); d.id = child.key; items.push(d); });
             items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-            if(items.length === 0) display.innerHTML = "<p style='text-align:center; padding:40px; opacity:0.5;'>သတင်းမရှိသေးပါ</p>";
-
             items.forEach(d => {
-                const name = d.authorName || (d.author ? d.author.split('@')[0] : "ဧည့်သည်");
+                const name = d.authorName || "ဧည့်သည်";
+                const isLiked = d.likedBy && currentUser && d.likedBy[currentUser.uid] ? 'liked' : '';
                 display.innerHTML += `
                     <div class="card">
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
@@ -227,7 +227,7 @@
                         ${d.img ? `<img src="${d.img}" class="post-img" onerror="this.style.display='none'">` : ''}
                         <p style="font-size:0.95rem; color:#475569; margin: 10px 0;">${d.status}</p>
                         <div class="card-actions">
-                            <button class="like-btn" onclick="giveLike('${d.id}', '${d.uid || ''}')">
+                            <button class="like-btn ${isLiked}" onclick="giveLike('${d.id}', '${d.uid || ''}')">
                                 <i class="fa-solid fa-heart"></i> ${d.likes || 0}
                             </button>
                         </div>
@@ -236,13 +236,14 @@
         });
     }
 
+    // Leaderboard System
     db.ref('users').orderByChild('points').limitToLast(3).on('value', snap => {
         let list = [];
         snap.forEach(u => list.push(u.val()));
         list.reverse();
         let ldrText = "🏆 Top: ";
-        list.forEach((u, i) => { if(u.points) ldrText += `${i+1}. ${u.name} (${u.points})  `; });
-        document.getElementById('leaderboard').innerText = list.length > 0 ? ldrText : "🏆 သတင်းတင်ပြီး Point ယူပါ";
+        list.forEach((u, i) => { if(u.points > 0) ldrText += `${i+1}. ${u.name} (${u.points})  `; });
+        document.getElementById('leaderboard').innerText = list.some(u => u.points > 0) ? ldrText : "🏆 သတင်းတင်ပြီး Point ယူပါ";
     });
 
     window.onload = loadData;
