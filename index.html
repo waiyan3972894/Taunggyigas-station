@@ -6,29 +6,40 @@
     <title>Taunggyi Hub - Community</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
+        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --accent: #16a34a; }
         * { box-sizing: border-box; font-family: 'Segoe UI', 'Pyidaungsu', sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; padding-bottom: 100px; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: white; font-size: 0.85rem; border-bottom: 1px solid #e2e8f0; }
-        .user-chip { background: #f1f5f9; padding: 5px 12px; border-radius: 20px; color: var(--primary); font-weight: 600; }
-        .header { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 30px 30px; }
-        .leaderboard { background: rgba(255,255,255,0.15); border-radius: 15px; padding: 12px; margin-top: 15px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: white; border-bottom: 1px solid #e2e8f0; }
+        .user-chip { background: #f1f5f9; padding: 5px 12px; border-radius: 20px; color: var(--primary); font-weight: 600; font-size: 0.8rem; }
+        .header { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .leaderboard { background: rgba(255,255,255,0.15); border-radius: 15px; padding: 10px; margin-top: 15px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.2); }
+
         .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
-        .tabs { display: flex; background: white; padding: 5px; border-radius: 18px; margin: 20px 0; position: sticky; top: 10px; z-index: 100; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 700; border-radius: 14px; color: #64748b; }
+        .tabs { display: flex; background: white; padding: 5px; border-radius: 18px; margin: 20px 0; position: sticky; top: 10px; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 0.8rem; font-weight: 700; border-radius: 14px; color: #64748b; }
         .tab.active { background: var(--primary); color: white; }
-        .card { background: var(--card); border-radius: 24px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02); }
-        .card-title { font-size: 1.15rem; font-weight: 700; color: #0f172a; }
-        .post-img { width: 100%; border-radius: 18px; margin: 12px 0; max-height: 350px; object-fit: cover; }
-        .card-actions { border-top: 1px solid #f1f5f9; padding-top: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .like-btn { border: none; background: #f8fafc; padding: 8px 15px; border-radius: 10px; cursor: pointer; color: #64748b; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .like-btn.liked { color: #ef4444; background: #fef2f2; }
+
+        .card { background: var(--card); border-radius: 24px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02); }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+        .post-img { width: 100%; border-radius: 18px; margin: 12px 0; max-height: 300px; object-fit: cover; }
+        .card-actions { border-top: 1px solid #f1f5f9; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+
+        .donation-banner { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #bbf7d0; text-align: center; padding: 25px; border-radius: 24px; margin-bottom: 20px; }
+        .donation-item { display: flex; justify-content: space-between; padding: 15px; background: white; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid var(--accent); align-items: center; }
+        .status-badge { font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; font-weight: bold; }
+        .pending { background: #fef9c3; color: #a16207; }
+        .approved { background: #dcfce7; color: #166534; }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 28px; width: 100%; max-width: 400px; }
-        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 1rem; outline: none; }
-        .btn-primary { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.9rem; color: #64748b; cursor: pointer; text-decoration: underline; }
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 22px; border: none; font-size: 26px; box-shadow: 0 10px 20px rgba(37,99,235,0.4); cursor: pointer; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 28px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1.5px solid #e2e8f0; border-radius: 14px; outline: none; }
+        .btn-primary { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; }
+        
+        .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 22px; border: none; font-size: 26px; box-shadow: 0 10px 20px rgba(37,99,235,0.4); z-index: 1000; cursor: pointer; }
+        .like-btn { border: none; background: #f8fafc; padding: 8px 15px; border-radius: 10px; cursor: pointer; color: #64748b; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+        .like-btn.liked { color: #ef4444; background: #fef2f2; }
+        .approve-btn { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -39,51 +50,32 @@
 </div>
 
 <div class="header">
-    <h1>⛰️ Taunggyi Hub</h1>
+    <h1 style="margin:0">⛰️ Taunggyi Hub</h1>
     <div class="leaderboard" id="leaderboard">🏆 Top: Loading...</div>
 </div>
 
 <div class="container">
     <div class="tabs">
         <div class="tab active" onclick="switchTab('fuel', this)">⛽ ဆီ</div>
-        <div class="tab" onclick="switchTab('lost', this)">🔍 ပျောက်/ကောက်</div>
+        <div class="tab" onclick="switchTab('lost', this)">🔍 ပျောက်</div>
         <div class="tab" onclick="switchTab('power', this)">💡 မီး</div>
-        <div class="tab" onclick="switchTab('emergency', this)">☎️ အရေးပေါ်</div>
+        <div class="tab" onclick="switchTab('donations', this)">🙏 အလှူ</div>
     </div>
     <div id="displayArea"></div>
 </div>
 
-<button class="fab" onclick="checkAuthAndOpenPost()"><i class="fa fa-plus"></i></button>
+<button id="addBtn" class="fab" onclick="checkAuthAndOpenPost()"><i class="fa fa-plus"></i></button>
 
-<div id="authModal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalTitle">အကောင့်ဝင်ရန်</h3>
-        <div id="registerFields" style="display:none;">
-            <input type="text" id="username" placeholder="အသုံးပြုမည့်အမည် (Username)">
-        </div>
-        <input type="email" id="email" placeholder="Gmail လိပ်စာ">
-        <input type="password" id="password" placeholder="Password">
-        <button class="btn-primary" id="mainAuthBtn" onclick="handleAuth()">ဝင်မည်</button>
-        <div class="auth-toggle" id="toggleLink" onclick="switchAuthMode()">အကောင့်မရှိသေးဘူးလား? အသစ်ဖွင့်ရန်</div>
-        <button onclick="closeModal('authModal')" style="width:100%; border:none; background:none; color:gray; margin-top:15px;">ပိတ်မည်</button>
-    </div>
-</div>
-
-<div id="postModal" class="modal">
-    <div class="modal-content">
-        <h3>သတင်းအသစ်တင်မည်</h3>
-        <div id="formFields"></div>
-        <button class="btn-primary" onclick="saveData()">တင်မည်</button>
-        <button onclick="closeModal('postModal')" style="width:100%; border:none; background:none; color:gray; margin-top:15px;">ပိတ်မည်</button>
-    </div>
-</div>
+<div id="donateModal" class="modal"><div class="modal-content"><h3>🙏 အလှူငွေပေးပို့ရန်</h3><p style="font-size: 0.8rem;">KPay-09xxxx (Wai Yan)</p><input type="number" id="dAmount" placeholder="Ks"><input type="file" id="dFile" accept="image/*"><button class="btn-primary" id="donateSubmitBtn" onclick="submitDonation()">Telegram ပို့မည်</button><button onclick="closeModal('donateModal')" style="width:100%; border:none; background:none; color:gray; margin-top:10px;">ပိတ်မည်</button></div></div>
+<div id="authModal" class="modal"><div class="modal-content"><h3 id="modalTitle">ဝင်ရန်</h3><div id="regFields" style="display:none;"><input id="username" placeholder="အမည်"></div><input id="email" placeholder="Gmail"><input type="password" id="password" placeholder="Pass"><button class="btn-primary" onclick="handleAuth()" id="mainAuthBtn">ဝင်မည်</button><div onclick="switchAuth()" style="text-align:center; margin-top:10px; cursor:pointer; font-size:0.8rem;">အကောင့်ဖွင့်ရန်</div></div></div>
+<div id="postModal" class="modal"><div class="modal-content"><h3>သတင်းတင်မည်</h3><div id="formFields"></div><button class="btn-primary" onclick="saveData()">တင်မည်</button></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
 <script>
-    const firebaseConfig = {
+    const firebaseConfig = { 
         apiKey: "AIzaSyCmsK55PSk5rYMIqvj8Xkadf1tFhkhsKxc",
         authDomain: "taunggyigasstation.firebaseapp.com",
         databaseURL: "https://taunggyigasstation-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -93,160 +85,135 @@
         appId: "1:206030659711:web:6c320045e1db2c899a5f4a"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const auth = firebase.auth();
-
-    let currentUser = null;
-    let currentTab = 'fuel';
-    let isRegisterMode = false;
+    const db = firebase.database(); const auth = firebase.auth();
+    
+    let currentUser = null; let currentTab = 'fuel'; let isReg = false;
+    const BOT_TOKEN = "8040219806:AAFqp_HqhtRw6sKHJO1LqR0tjRf0NtM1nLQ"; 
+    const ADMIN_CHAT_ID = "7247933813";
+    const ADMIN_EMAIL = "htin8611@gmail.com";
 
     auth.onAuthStateChanged(user => {
         currentUser = user;
-        if (user) {
-            db.ref('users/' + user.uid).once('value', snap => {
-                document.getElementById('userInfo').innerText = `👤 ${snap.val()?.name || user.email.split('@')[0]}`;
-            });
-            document.getElementById('authBtn').innerText = "LOGOUT";
-        } else {
-            document.getElementById('userInfo').innerText = "👋 မင်္ဂလာပါ ဧည့်သည်";
-            document.getElementById('authBtn').innerText = "LOGIN";
-        }
-        loadData(); // Auth ပြောင်းတိုင်း Like Button status တွေ ပြန်စစ်ဖို့
+        if(user) db.ref('users/'+user.uid).once('value', s => { document.getElementById('userInfo').innerText = "👤 " + (s.val()?.name || "User"); });
+        document.getElementById('authBtn').innerText = user ? "LOGOUT" : "LOGIN";
+        loadData();
     });
-
-    function switchAuthMode() {
-        isRegisterMode = !isRegisterMode;
-        document.getElementById('modalTitle').innerText = isRegisterMode ? "အကောင့်သစ်ဖွင့်ရန်" : "အကောင့်ဝင်ရန်";
-        document.getElementById('registerFields').style.display = isRegisterMode ? "block" : "none";
-        document.getElementById('mainAuthBtn').innerText = isRegisterMode ? "အကောင့်ဖွင့်မည်" : "ဝင်မည်";
-        document.getElementById('toggleLink').innerText = isRegisterMode ? "အကောင့်ရှိပြီးသားလား? ပြန်ဝင်ရန်" : "အကောင့်မရှိသေးဘူးလား? အသစ်ဖွင့်ရန်";
-    }
-
-    function handleAuth() {
-        const email = document.getElementById('email').value;
-        const pass = document.getElementById('password').value;
-        const name = document.getElementById('username').value;
-        if (isRegisterMode) {
-            auth.createUserWithEmailAndPassword(email, pass).then(cred => {
-                db.ref('users/' + cred.user.uid).set({ name: name, email: email, points: 0 });
-                closeModal('authModal');
-            }).catch(err => alert(err.message));
-        } else {
-            auth.signInWithEmailAndPassword(email, pass).then(() => closeModal('authModal')).catch(err => alert("Email သို့မဟုတ် Password မှားယွင်းနေပါသည်"));
-        }
-    }
-
-    function toggleAuthModal() {
-        if (currentUser) auth.signOut();
-        else { isRegisterMode = false; switchAuthMode(); document.getElementById('authModal').style.display = 'flex'; }
-    }
-
-    function checkAuthAndOpenPost() {
-        if (!currentUser) return document.getElementById('authModal').style.display = 'flex';
-        openPostModal();
-    }
 
     function switchTab(tab, el) {
         currentTab = tab;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
+        document.getElementById('addBtn').style.display = tab === 'donations' ? 'none' : 'block';
         loadData();
     }
 
-    function openPostModal() {
-        const fields = document.getElementById('formFields');
-        if (currentTab === 'fuel') { fields.innerHTML = `<input id="v1" placeholder="ဆိုင်အမည်"> <select id="v2"><option>ဆီရှိသည် ✅</option><option>ဆီပြတ်နေသည် ❌</option></select>`; }
-        else if (currentTab === 'power') { fields.innerHTML = `<input id="v1" placeholder="ရပ်ကွက်အမည်"> <select id="v2"><option>မီးလာနေသည် 💡</option><option>မီးပျက်နေသည် 🌑</option></select>`; }
-        else { fields.innerHTML = `<input id="v1" placeholder="ခေါင်းစဉ်"><textarea id="v2" placeholder="အသေးစိတ်" rows="3"></textarea><input id="vImg" placeholder="ပုံ Link (ImgBB)">`; }
-        document.getElementById('postModal').style.display = 'flex';
-    }
-
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function saveData() {
-        const v1 = document.getElementById('v1').value;
-        const v2 = document.getElementById('v2').value;
-        const vImg = document.getElementById('vImg')?.value || "";
-        if(!v1 || !v2) return alert("အချက်အလက်ဖြည့်ပါ");
-
-        db.ref('users/' + currentUser.uid).once('value', snap => {
-            const userName = snap.val()?.name || currentUser.email.split('@')[0];
-            const postData = { 
-                title: v1, status: v2, img: vImg, 
-                time: new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, day: 'numeric', month: 'short' }), 
-                timestamp: Date.now(), 
-                uid: currentUser.uid, 
-                authorName: userName, 
-                likes: 0 
-            };
-            db.ref(currentTab + '/').push(postData);
-            closeModal('postModal');
-        });
-    }
-
-    // Like Spamming ကာကွယ်ထားသော Like Function
-    function giveLike(postId, authorUid) {
-        if (!currentUser) return document.getElementById('authModal').style.display = 'flex';
-        const likeRef = db.ref(`${currentTab}/${postId}/likedBy/${currentUser.uid}`);
-        
-        likeRef.once('value', snap => {
-            if (snap.exists()) {
-                // Like ပေးပြီးသားဆိုရင် Unlike လုပ်မယ် (Like ပြန်ဖြုတ်မယ်)
-                likeRef.remove();
-                db.ref(`${currentTab}/${postId}/likes`).transaction(c => (c || 1) - 1);
-                if(authorUid) db.ref('users/' + authorUid + '/points').transaction(p => (p || 0) - 10);
+    // --- Like System ---
+    function giveLike(pid, auid) {
+        if(!currentUser) return document.getElementById('authModal').style.display = 'flex';
+        const ref = db.ref(`${currentTab}/${pid}/likedBy/${currentUser.uid}`);
+        ref.once('value', s => {
+            if(s.exists()) {
+                ref.remove();
+                db.ref(`${currentTab}/${pid}/likes`).transaction(c => (c || 1) - 1);
+                if(auid) db.ref('users/'+auid+'/points').transaction(p => (p || 0) - 10);
             } else {
-                // Like မပေးရသေးရင် Like ပေးမယ်
-                likeRef.set(true);
-                db.ref(`${currentTab}/${postId}/likes`).transaction(c => (c || 0) + 1);
-                if(authorUid) db.ref('users/' + authorUid + '/points').transaction(p => (p || 0) + 10);
+                ref.set(true);
+                db.ref(`${currentTab}/${pid}/likes`).transaction(c => (c || 0) + 1);
+                if(auid) db.ref('users/'+auid+'/points').transaction(p => (p || 0) + 10);
             }
         });
     }
 
+    // --- Donation & Telegram ---
+    async function submitDonation() {
+        const amt = document.getElementById('dAmount').value;
+        const file = document.getElementById('dFile').files[0];
+        if(!amt || !file) return alert("ဖြည့်ပါ");
+        const btn = document.getElementById('donateSubmitBtn');
+        btn.innerText = "ပို့နေသည်..."; btn.disabled = true;
+        const name = (await db.ref('users/'+currentUser.uid).once('value')).val()?.name || "User";
+        const formData = new FormData();
+        formData.append("chat_id", ADMIN_CHAT_ID); formData.append("photo", file);
+        formData.append("caption", `🔔 *အလှူရှင်သစ်*\nအမည်: ${name}\nပမာဏ: ${amt} Ks`);
+        formData.append("parse_mode", "Markdown");
+        try {
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: formData });
+            if(res.ok) {
+                db.ref('donations/').push({ donorName: name, amount: amt, status: 'pending', date: new Date().toLocaleDateString(), timestamp: Date.now() });
+                alert("ပို့ပြီးပါပြီ။"); closeModal('donateModal');
+            } else alert("Error စစ်ပါ");
+        } catch (e) { alert(e.message); }
+        finally { btn.innerText = "Telegram ပို့မည်"; btn.disabled = false; }
+    }
+
+    function approveItem(id) { if(confirm("အတည်ပြုမှာလား?")) db.ref('donations/'+id).update({ status: 'approved' }); }
+
     function loadData() {
         const display = document.getElementById('displayArea');
-        display.innerHTML = "<p style='text-align:center; padding:40px; opacity:0.5;'>Loading...</p>";
-        
-        db.ref(currentTab + '/').on('value', snap => {
+        display.innerHTML = "Loading...";
+        db.ref(currentTab+'/').on('value', snap => {
             display.innerHTML = "";
+            if(currentTab === 'donations') {
+                let total = 0;
+                let html = `<div class="donation-banner"><h3>စုစုပေါင်းအလှူငွေ</h3><h1 id="totalAmt">0 Ks</h1><button class="btn-primary" onclick="currentUser ? document.getElementById('donateModal').style.display='flex' : alert('Login ဝင်ပါ')">🙏 လှူဒါန်းမည်</button></div>`;
+                snap.forEach(c => {
+                    let d = c.val(); if(d.status === 'approved') total += parseInt(d.amount);
+                    const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+                    const btn = (isAdmin && d.status === 'pending') ? `<br><button class="approve-btn" onclick="approveItem('${c.key}')">Approve ✅</button>` : '';
+                    html += `<div class="donation-item" style="padding:15px; margin-bottom:10px; border-radius:15px; background:white; border-left:5px solid var(--accent); box-shadow:0 2px 4px rgba(0,0,0,0.02);"><div><b>${d.donorName}</b> <span class="status-badge ${d.status}">${d.status}</span>${btn}</div><b>+ ${parseInt(d.amount).toLocaleString()} Ks</b></div>`;
+                });
+                display.innerHTML = html;
+                document.getElementById('totalAmt').innerText = total.toLocaleString() + " Ks";
+                return;
+            }
             let items = [];
-            snap.forEach(child => { let d = child.val(); d.id = child.key; items.push(d); });
-            items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
+            snap.forEach(c => { let d = c.val(); d.id = c.key; items.push(d); });
+            items.sort((a,b) => b.timestamp - a.timestamp);
             items.forEach(d => {
-                const name = d.authorName || "ဧည့်သည်";
                 const isLiked = d.likedBy && currentUser && d.likedBy[currentUser.uid] ? 'liked' : '';
-                display.innerHTML += `
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                            <span style="font-size:0.8rem; color:var(--primary); font-weight:700;">${name}</span>
-                            <span style="font-size:0.75rem; color:#94a3b8;">${d.time || ''}</span>
-                        </div>
-                        <div class="card-title">${d.title}</div>
-                        ${d.img ? `<img src="${d.img}" class="post-img" onerror="this.style.display='none'">` : ''}
-                        <p style="font-size:0.95rem; color:#475569; margin: 10px 0;">${d.status}</p>
-                        <div class="card-actions">
-                            <button class="like-btn ${isLiked}" onclick="giveLike('${d.id}', '${d.uid || ''}')">
-                                <i class="fa-solid fa-heart"></i> ${d.likes || 0}
-                            </button>
-                        </div>
-                    </div>`;
+                display.innerHTML += `<div class="card">
+                    <div style="font-size:0.7rem; color:gray; display:flex; justify-content:space-between;"><span>${d.authorName}</span><span>${d.time || ''}</span></div>
+                    <div class="card-title">${d.title}</div>
+                    ${d.img ? `<img src="${d.img}" class="post-img" onerror="this.style.display='none'">` : ''}
+                    <p>${d.status}</p>
+                    <div class="card-actions"><button class="like-btn ${isLiked}" onclick="giveLike('${d.id}', '${d.uid}')"><i class="fa-solid fa-heart"></i> ${d.likes || 0}</button></div>
+                </div>`;
             });
         });
     }
 
-    // Leaderboard System
+    // Leaderboard
     db.ref('users').orderByChild('points').limitToLast(3).on('value', snap => {
-        let list = [];
-        snap.forEach(u => list.push(u.val()));
-        list.reverse();
-        let ldrText = "🏆 Top: ";
-        list.forEach((u, i) => { if(u.points > 0) ldrText += `${i+1}. ${u.name} (${u.points})  `; });
-        document.getElementById('leaderboard').innerText = list.some(u => u.points > 0) ? ldrText : "🏆 သတင်းတင်ပြီး Point ယူပါ";
+        let list = []; snap.forEach(u => list.push(u.val())); list.reverse();
+        let txt = "🏆 Top: ";
+        list.forEach((u, i) => { if(u.points > 0) txt += `${i+1}. ${u.name} (${u.points}) `; });
+        document.getElementById('leaderboard').innerText = list.some(u => u.points > 0) ? txt : "🏆 သတင်းတင်ပြီး အမှတ်ယူပါ";
     });
 
-    window.onload = loadData;
+    // --- Utils ---
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function switchAuth() { isReg = !isReg; document.getElementById('modalTitle').innerText = isReg ? "အကောင့်ဖွင့်" : "ဝင်ရန်"; document.getElementById('regFields').style.display = isReg ? "block" : "none"; }
+    function toggleAuthModal() { if(currentUser) auth.signOut(); else document.getElementById('authModal').style.display = 'flex'; }
+    function handleAuth() {
+        const e = document.getElementById('email').value, p = document.getElementById('password').value;
+        if(isReg) auth.createUserWithEmailAndPassword(e,p).then(c => { db.ref('users/'+c.user.uid).set({name: document.getElementById('username').value, points:0}); closeModal('authModal'); });
+        else auth.signInWithEmailAndPassword(e,p).then(() => closeModal('authModal')).catch(() => alert("မှားနေသည်"));
+    }
+    function checkAuthAndOpenPost() {
+        if(!currentUser) return document.getElementById('authModal').style.display = 'flex';
+        const f = document.getElementById('formFields');
+        if(currentTab==='fuel') f.innerHTML=`<input id="v1" placeholder="ဆိုင်"><select id="v2"><option>ဆီရှိ ✅</option><option>ပြတ် ❌</option></select>`;
+        else if(currentTab==='power') f.innerHTML=`<input id="v1" placeholder="ရပ်ကွက်"><select id="v2"><option>မီးလာ ✅</option><option>ပျက် 🌑</option></select>`;
+        else f.innerHTML=`<input id="v1" placeholder="ခေါင်းစဉ်"><textarea id="v2" placeholder="အသေးစိတ်"></textarea><input id="vImg" placeholder="ပုံ Link (ရှိလျှင်)">`;
+        document.getElementById('postModal').style.display = 'flex';
+    }
+    function saveData() {
+        const v1=document.getElementById('v1').value, v2=document.getElementById('v2').value, vImg=document.getElementById('vImg')?.value || "";
+        db.ref('users/'+currentUser.uid).once('value', s => {
+            db.ref(currentTab+'/').push({ title:v1, status:v2, img:vImg, authorName: s.val()?.name, uid: currentUser.uid, timestamp:Date.now(), time:new Date().toLocaleTimeString(), likes:0 });
+            closeModal('postModal');
+        });
+    }
 </script>
 </body>
 </html>
